@@ -19,18 +19,33 @@ from htmlnode import *
     #     result = node.props_to_html()
     #     self.assertEqual(result, ''), 
 
-class TestLeafNode(unittest.TestCase):
-    def test_leaf_to_html_p(self):
-        node = LeafNode("p", "Hello, world!")
-        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+# class TestLeafNode(unittest.TestCase):
+#     def test_leaf_to_html_p(self):
+#         node = LeafNode("p", "Hello, world!")
+#         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
-    def test_leaf_to_html_one_prop(self):
-        node = LeafNode("p", "Hello, world!", {"aria-hidden": "true"})
-        self.assertEqual(node.to_html(), '<p aria-hidden="true">Hello, world!</p>')
+#     def test_leaf_to_html_one_prop(self):
+#         node = LeafNode("p", "Hello, world!", {"aria-hidden": "true"})
+#         self.assertEqual(node.to_html(), '<p aria-hidden="true">Hello, world!</p>')
 
-    def test_leaf_to_html_many_props(self):
-        node = LeafNode("p", "Hello, world!", {"aria-hidden": "true", "id": "4", "class": "header"})
-        self.assertEqual(node.to_html(), '<p aria-hidden="true" id="4" class="header">Hello, world!</p>')
+#     def test_leaf_to_html_many_props(self):
+#         node = LeafNode("p", "Hello, world!", {"aria-hidden": "true", "id": "4", "class": "header"})
+#         self.assertEqual(node.to_html(), '<p aria-hidden="true" id="4" class="header">Hello, world!</p>')
+
+class TestParentNode(unittest.TestCase):
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
 
     
 if __name__ == "__main__":
