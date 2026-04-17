@@ -31,7 +31,7 @@ def extract_markdown_images(text):
     return alt_match
 
 def extract_markdown_links(text):
-    link_match = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)")
+    link_match = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
     return link_match
 
 def split_nodes_image(old_nodes):
@@ -92,3 +92,28 @@ def split_nodes_link(old_nodes):
             new_nodes.append(TextNode(remaining_text, TextType.TEXT))
             
     return new_nodes
+
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
+
+
+    
+
+def markdown_to_blocks(markdown):
+    blocks = markdown.split('\n\n')
+    new_blocks = []
+    for block in blocks:
+        if block:
+            new_blocks.append(block.strip())
+        
+    return new_blocks
+
+
+print(text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"))
