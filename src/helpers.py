@@ -115,4 +115,9 @@ def markdown_to_blocks(markdown):
         
     return new_blocks
 
+def extract_title(markdown):
+    lines = markdown.split("\n")
+    for line in lines:
+        if line[:2] == "# ":
+            return line[2:]
 
