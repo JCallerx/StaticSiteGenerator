@@ -1,7 +1,8 @@
 from textnode import *
+from website_funcs import *
 def main():
-    test = TextNode("This is some anchor text", TextType.BOLD_TEXT, "https://www.boot.dev")
-    print(test)
+    copy_static("static", "public")
+
 
 if __name__ == "__main__":
     main()
