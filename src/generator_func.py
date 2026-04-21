@@ -2,7 +2,7 @@ from md_to_html import *
 import os
 from pathlib import Path
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r") as f:
@@ -15,6 +15,8 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(from_content)
     new_file = template_content.replace("{{ Title }}", title)
     new_file = new_file.replace("{{ Content }}", result)
+    new_file = new_file.replace('href="/', f'href="{basepath}')
+    new_file = new_file.replace('src="/', f'src="{basepath}')
     destination = os.path.dirname(dest_path)
     os.makedirs(destination, exist_ok=True)
 
@@ -22,7 +24,7 @@ def generate_page(from_path, template_path, dest_path):
         f.write(new_file)
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     content_files = os.listdir(dir_path_content)
     for file in content_files:
         full_path = os.path.join(dir_path_content, file)
@@ -30,10 +32,10 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             if file[-3:] == ".md":
                 p = Path(file)
                 new_p = p.with_suffix(".html")
-                generate_page(full_path, template_path, os.path.join(dest_dir_path, new_p))
+                generate_page(full_path, template_path, os.path.join(dest_dir_path, new_p), basepath)
         else:
             ##this would be a directory
-            generate_pages_recursive(full_path, template_path, os.path.join(dest_dir_path, file))
+            generate_pages_recursive(full_path, template_path, os.path.join(dest_dir_path, file), basepath)
 
 
 
